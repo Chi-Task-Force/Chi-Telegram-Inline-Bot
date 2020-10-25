@@ -1,0 +1,3 @@
+httpx
+apscheduler
+aiogram

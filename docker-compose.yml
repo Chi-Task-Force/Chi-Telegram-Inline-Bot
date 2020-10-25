@@ -1,0 +1,7 @@
+version: "3"
+services:
+  vegetable:
+    build: .
+    environment:
+      - API_TOKEN=<YOUR TOKEN HERE>
+    restart: unless-stopped
