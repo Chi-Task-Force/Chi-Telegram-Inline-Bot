@@ -1,10 +1,7 @@
-import asyncio
 import hashlib
 import logging
 import os
 import random
-import uuid
-from datetime import datetime
 from typing import List
 
 from aiogram import Bot, Dispatcher, executor
@@ -45,7 +42,7 @@ async def inline_echo(inline_query: InlineQuery):
         title=answer,
         input_message_content=InputTextMessageContent(answer)
     ) for answer in answers]
-    await bot.answer_inline_query(inline_query.id, results=items, cache_time=10)
+    await bot.answer_inline_query(inline_query.id, results=items, cache_time=10, is_personal=True)
 
 
 scheduler.add_job(update_corpus, "interval", minutes=10)
