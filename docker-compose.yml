@@ -2,6 +2,9 @@ version: "3"
 services:
   vegetable:
     build: .
+    volumes:
+      - "./log:/app/log"
     environment:
       - API_TOKEN=<YOUR TOKEN HERE>
+      - LOG_FILE=log/sell.log
     restart: unless-stopped
