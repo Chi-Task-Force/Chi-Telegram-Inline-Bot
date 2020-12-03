@@ -1,7 +1,6 @@
 import hashlib
 import logging
 import os
-import random
 from typing import List
 
 from aiogram import Bot, Dispatcher, executor
@@ -11,6 +10,7 @@ from httpx import AsyncClient
 
 from .corpus import Corpus, UpdateException
 from .logger import InlineLogger
+from .sell import Seller
 
 API_TOKEN = os.environ["API_TOKEN"]
 PROXY = os.environ.get("PROXY", None)
@@ -33,23 +33,23 @@ async def update_corpus():
 @dp.inline_handler()
 async def inline_echo(inline_query: InlineQuery):
     text = inline_query.query
-    answers: List[str] = [sentence for sentence in corpus.common if text in sentence] if text else corpus.common
-    try:
-        answers = sorted(random.sample(answers, 5))
-    except ValueError:
-        answers = sorted(answers[:5])
+    answers: List[str] = seller.sell(text)
+    moan: str = seller.vegetable_moan()
 
     answers_hash = {answer: hashlib.md5(answer.encode()).hexdigest() for answer in answers}
     for answer, _hash in answers_hash.items():
         answer_map[_hash] = answer
 
-    items = [InlineQueryResultArticle(
-        id=_hash,
-        title=answer,
-        input_message_content=InputTextMessageContent(answer)
-    ) for answer, _hash in answers_hash.items()]
+    items = [InlineQueryResultArticle(id=hashlib.md5(moan.encode()).hexdigest(),
+                                      title="菜喘",
+                                      input_message_content=InputTextMessageContent(moan))] + \
+            [InlineQueryResultArticle(
+                id=_hash,
+                title=answer,
+                input_message_content=InputTextMessageContent(answer)
+            ) for answer, _hash in answers_hash.items()]
 
-    await bot.answer_inline_query(inline_query.id, results=items, cache_time=10, is_personal=True)
+    await bot.answer_inline_query(inline_query.id, results=items, cache_time=0, is_personal=True)
 
 
 @dp.chosen_inline_handler()
@@ -63,6 +63,7 @@ scheduler = AsyncIOScheduler()
 scheduler.add_job(update_corpus, "interval", minutes=10)
 scheduler.add_job(update_corpus)
 corpus = Corpus()
+seller = Seller(corpus)
 http = AsyncClient()
 scheduler.start()
 
