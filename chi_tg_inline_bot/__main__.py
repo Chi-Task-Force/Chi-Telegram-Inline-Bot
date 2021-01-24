@@ -14,6 +14,7 @@ from .sell import Seller
 
 API_TOKEN = os.environ["API_TOKEN"]
 PROXY = os.environ.get("PROXY", None)
+MOAN_ONLY = True if os.environ.get("MOAN_ONLY", "false") == "true" else False
 
 bot = Bot(token=API_TOKEN, proxy=PROXY)
 dp = Dispatcher(bot)
@@ -49,11 +50,10 @@ async def inline_echo(inline_query: InlineQuery):
     items = [InlineQueryResultArticle(id=hashlib.md5(moan.encode()).hexdigest(),
                                       title="菜喘",
                                       input_message_content=InputTextMessageContent(moan))] + \
-            [InlineQueryResultArticle(
-                id=_hash,
+            ([InlineQueryResultArticle(id=_hash,
                 title=answer,
                 input_message_content=InputTextMessageContent(answer)
-            ) for answer, _hash in answers_hash.items()] + \
+            ) for answer, _hash in answers_hash.items()] if not MOAN_ONLY else []) + \
             [InlineQueryResultArticle(id=stat_hash,
                                       title="卖菜统计",
                                       input_message_content=InputTextMessageContent(sell_stat))]
