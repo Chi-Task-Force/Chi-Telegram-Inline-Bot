@@ -1,7 +1,6 @@
 import hashlib
 import logging
 import os
-from queue import Queue
 from typing import List, Set
 
 from aiogram import Bot, Dispatcher, executor, types
@@ -80,7 +79,7 @@ async def inline_choice(result: ChosenInlineResult):
 async def stat_handler(message: types.Message):
     stat = await logger.get_stat()
     top_sentences = "\n".join([f"{k}：{v} 次" for k, v in stat.top_sentences.items()])
-    await message.answer(f"总共已经有 {stat.users} 名迟化人卖了 {stat.total_requests} 句菜\n其中最迟的人卖了 {stat.top_user_count} 句\n\n" \
+    await message.answer(f"总共已经有 {stat.users} 名迟化人卖了 {stat.total_requests} 句菜\n其中最迟的人卖了 {stat.top_user_count} 句\n\n"
                          f"被卖得最多次的句子：\n{top_sentences}")
 
 

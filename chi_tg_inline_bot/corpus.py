@@ -1,11 +1,12 @@
+import os
 import random
 from dataclasses import dataclass, field
 from typing import List
 
-from httpx import AsyncClient, NetworkError, HTTPError
 from httpcore import TimeoutException
+from httpx import AsyncClient, HTTPError, NetworkError
 
-BASE_URL = "https://raw.githubusercontent.com/Chi-Task-Force/Chi-Corpus/master"
+BASE_URL = os.environ["CORPUS_URL"]
 
 
 class UpdateException(Exception):
@@ -27,7 +28,8 @@ class Corpus:
             self.common = (await self.http.get(f"{BASE_URL}/common.txt")).text.strip().split("\n")
             self.refuse = (await self.http.get(f"{BASE_URL}/refuse.txt")).text.strip().split("\n")
             self.trigger = (await self.http.get(f"{BASE_URL}/trigger.txt")).text.strip().split("\n")
-            self.phrase = [item.split(" ") for item in (await self.http.get(f"{BASE_URL}/phrase.txt")).text.strip().split("\n")]
+            self.phrase = [item.split(" ") for item in
+                           (await self.http.get(f"{BASE_URL}/phrase.txt")).text.strip().split("\n")]
         except (NetworkError, HTTPError, TimeoutException) as e:
             raise UpdateException from e
 
