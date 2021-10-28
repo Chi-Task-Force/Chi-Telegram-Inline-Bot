@@ -1,5 +1,9 @@
 # Chi Telegram Inline Bot
 
+> DEPRECATED
+>
+> Replaced by [Chi Telegram Inline Bot (Rust)](https://github.com/Chi-Task-Force/Chi-Telegram-Inline-Bot-Neo).
+
 在 Telegram 上快速模仿迟先生卖弱。
 
 Telegram: [@realskyzh_bot](https://t.me/realskyzh_bot)
